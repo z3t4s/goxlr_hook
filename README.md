@@ -28,5 +28,13 @@ Make sure that you have [CMake](https://cmake.org/download/) installed!
 
 There is a [tutorial video](https://streamable.com/wfyq3y) on how to do this
 
+## Examples
+### Controlling windows audio 
+This modification allows you to sync a GoXLR slider with a windows audio device
+
+[source code](https://gist.github.com/z3t4s/4b2447abe4abc78a87b183eec6594160)
+![](https://i.imgur.com/Etc5iKB.gif)
+
+
 ## License
 IDGAF do what you want with it. Please respect the license of the dependency minhook
