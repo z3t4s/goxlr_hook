@@ -3,6 +3,7 @@
 #include <map>
 #include <psapi.h>
 #include "minhook/include/MinHook.h"
+#include "voicemeter.hpp"
 
 // We dont want the compiler to re-order our struct
 //
@@ -42,6 +43,7 @@ Slider_ctor_t orgSlider_ctor;
 HANDLE thread_handle;
 uintptr_t addr_slider_ctor;
 std::map<Slider*, double> sliders;
+voicemeter_interface* vm_interface;
 
 // We only need this so we can add the DLL to GoXLR's IAT
 //
@@ -99,7 +101,15 @@ void __fastcall Slider_ctor(Slider* ecx, void* edx, int arg3)
 //
 void callback_valuechange(const char* slider_name, const double slider_value)
 {
-	DBGPRINT("Slider \"%s\" updated value to %f\n", slider_name, slider_value);
+	//dB = 20 log 10 (V2/V1)
+	//	
+	float scaled_value = 20 * log10(slider_value / 100.f);
+
+	if (!strcmp(slider_name, "micSlider"))
+	{
+		vm_interface->set_parameter("Strip[0].gain", scaled_value);
+		DBGPRINT("Slider \"%s\" updated value to %f scaled_value %f\n", slider_name, slider_value, scaled_value);
+	}	
 }
 
 // Worker thread. You shouldn't need to adjust anything in there
@@ -113,6 +123,13 @@ DWORD __stdcall winapi_thread(void* arg)
 		Sleep(100);
 
 	DBGPRINT("Starting GoXLR volume monitoring\n");
+
+	vm_interface = new voicemeter_interface();
+	if (!vm_interface->status)
+	{
+		DBGPRINT("Failed to initialize the voicemeter API\n");
+		return 0x0;
+	}
 
 	// This endless loop will be broken by TerminateThread later on
 	//
@@ -239,6 +256,8 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
 			//
 			if (thread_handle != INVALID_HANDLE_VALUE)
 				TerminateThread(thread_handle, 0);
+
+			vm_interface->~voicemeter_interface();
 
 			return TRUE;
 		}

@@ -1,3 +1,6 @@
 [submodule "minhook"]
 	path = minhook
 	url = https://github.com/TsudaKageyu/minhook
+[submodule "Voicemeeter-SDK"]
+	path = Voicemeeter-SDK
+	url = https://github.com/vburel2018/Voicemeeter-SDK
