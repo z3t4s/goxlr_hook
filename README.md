@@ -35,6 +35,10 @@ This modification allows you to sync a GoXLR slider with a windows audio device
 [source code](https://gist.github.com/z3t4s/4b2447abe4abc78a87b183eec6594160)
 ![](https://i.imgur.com/Etc5iKB.gif)
 
+### Controlling Voicemeter
+This branch allows you to sync a GoXLR slider with Voicemeter sliders
+
+![](https://i.imgur.com/DTQeHaF.gif)
 
 ## License
 IDGAF do what you want with it. Please respect the license of the dependency minhook
